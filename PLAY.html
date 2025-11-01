@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>自動愛心雨 + 漂浮文字</title>
+<title>愛心文字漂浮效果</title>
 <style>
 html, body {
     margin: 0;
@@ -15,151 +15,92 @@ html, body {
     background-color: #111;
 }
 
-/* 大愛心背景 */
-.heart-bg {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 70vmin;
-    height: 70vmin;
-    background: radial-gradient(circle at 50% 50%, #ff6b6b 0%, #ff4757 80%);
-    clip-path: path('M50 15 C50 5, 90 5, 90 35 C90 60, 50 90, 50 90 C50 90, 10 60, 10 35 C10 5, 50 5, 50 15 Z');
-    z-index: 0;
-}
-
 .chat-container {
-    position: absolute;
+    position: relative;
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    z-index: 1;
 }
 
-/* 漂浮文字氣泡 */
-.chat-bubble {
+/* 爱心 div */
+.heart {
     position: absolute;
-    padding: 12px 20px;
-    border-radius: 25px;
-    color: #fff;
-    font-size: 18px;
-    opacity: 0;
-    white-space: nowrap;
-    pointer-events: none;
-    animation: floatUp linear forwards;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-}
-
-@keyframes floatUp {
-    0% { opacity: 0; transform: translateY(20px); }
-    10% { opacity: 1; }
-    100% { transform: translateY(-150%); opacity: 0; }
-}
-
-/* 飄字 */
-.floating-text {
-    position: absolute;
-    font-size: 16px;
-    font-weight: bold;
-    color: #ff9ff3;
-    opacity: 0;
-    animation: floatText 5s linear forwards;
-}
-
-@keyframes floatText {
-    0% { opacity: 0; transform: translateY(100%); }
-    10% { opacity: 1; }
-    100% { opacity: 0; transform: translateY(-150%); }
-}
-
-/* 自動漂浮愛心 */
-.auto-heart {
-    position: absolute;
-    width: 30px;
-    height: 30px;
+    width: 60px;
+    height: 60px;
     background: red;
     transform: rotate(-45deg);
     clip-path: polygon(50% 0%, 100% 35%, 75% 100%, 50% 85%, 25% 100%, 0% 35%);
     opacity: 0;
-    animation: floatHeart linear forwards;
+    pointer-events: none;
+    animation: floatHeart 3s forwards;
 }
 
+/* 爱心漂浮动画 */
 @keyframes floatHeart {
-    0% { transform: translateY(100%) scale(0); opacity: 0; }
-    20% { opacity: 1; scale: 1.2; }
-    100% { transform: translateY(-150%) scale(1); opacity: 0; }
+    0% { opacity: 0; transform: scale(0) translateY(0) rotate(-45deg); }
+    20% { opacity: 1; transform: scale(1.2) translateY(-20px) rotate(-45deg); }
+    100% { opacity: 0; transform: scale(1) translateY(-150px) rotate(-45deg); }
+}
+
+/* 爱心里的文字 */
+.heart-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    animation: floatTextInHeart 3s forwards;
+}
+
+@keyframes floatTextInHeart {
+    0% { opacity: 0; transform: translate(-50%, -50%) translateY(0); }
+    20% { opacity: 1; transform: translate(-50%, -50%) translateY(-5px); }
+    100% { opacity: 0; transform: translate(-50%, -50%) translateY(-80px); }
 }
 </style>
 </head>
 <body>
 
-<div class="heart-bg"></div>
 <div class="chat-container" id="chatContainer"></div>
 
 <script>
 const messages = [
-  "寶貝你今天累了嗎？",
-  "我一直在想你❤",
-  "記得多喝水喔💧",
-  "你最棒了💪",
-  "我好想抱抱你🤗",
-  "晚安寶貝，做個好夢🌙",
-  "愛你喔❤️",
-  "今天辛苦了😚",
-  "別忘了微笑😊",
-  "想你了💌",
-  "抱抱你❤️",
-  "你是我的小太陽☀️"
+    "愛你❤️", "想你💌", "寶貝💖", "抱抱🤗", "你最棒💪",
+    "甜心🍬", "小太陽☀️", "晚安🌙", "記得喝水💧", "永遠愛你❤"
 ];
-
-const colors = ["#ff6b6b", "#feca57", "#48dbfb", "#1dd1a1", "#5f27cd", "#ff9ff3", "#ff9f43"];
 
 function random(min, max) { return Math.random() * (max - min) + min; }
 
-// 漂浮文字氣泡
-function createBubble() {
-    const bubble = document.createElement("div");
-    bubble.className = "chat-bubble";
-    bubble.innerText = messages[Math.floor(Math.random() * messages.length)];
-    bubble.style.background = colors[Math.floor(Math.random() * colors.length)];
-    bubble.style.left = random(20, 80) + "vw";
-    bubble.style.top = random(10, 60) + "vh"; 
-    bubble.style.fontSize = random(16, 28) + "px";
-    const duration = random(5, 12);
-    bubble.style.animationDuration = duration + "s";
-    document.getElementById("chatContainer").appendChild(bubble);
-    setTimeout(() => bubble.remove(), duration * 1000);
-}
-
-// 滿屏飄字
-function createFloatingText() {
-    const text = document.createElement("div");
-    text.className = "floating-text";
-    text.innerText = messages[Math.floor(Math.random() * messages.length)];
-    text.style.left = random(0, 90) + "vw";
-    text.style.fontSize = random(16, 28) + "px";
-    document.getElementById("chatContainer").appendChild(text);
-    setTimeout(() => text.remove(), 5000);
-}
-
-// 自動漂浮愛心
-function createAutoHeart() {
+// 创建一个带文字的爱心
+function createHeartWithText() {
     const heart = document.createElement("div");
-    heart.className = "auto-heart";
+    heart.className = "heart";
     heart.style.left = random(10, 90) + "vw";
-    heart.style.width = random(20, 40) + "px";
+    heart.style.top = random(20, 70) + "vh";
+    heart.style.width = random(40, 70) + "px";
     heart.style.height = heart.style.width;
-    const duration = random(4, 10);
-    heart.style.animationDuration = duration + "s";
+
+    // 创建文字
+    const text = document.createElement("div");
+    text.className = "heart-text";
+    text.innerText = messages[Math.floor(Math.random() * messages.length)];
+    text.style.fontSize = random(10, 16) + "px";
+    heart.appendChild(text);
+
     document.getElementById("chatContainer").appendChild(heart);
-    setTimeout(() => heart.remove(), duration * 1000);
+
+    // 动画结束后移除
+    setTimeout(() => heart.remove(), 3000);
 }
 
-// 定時生成
-setInterval(createBubble, 500);
-setInterval(createFloatingText, 400);
-setInterval(createAutoHeart, 700); // 每0.7秒生成愛心
+// 自动生成爱心 + 文字漂浮
+setInterval(createHeartWithText, 600);
 </script>
 
 </body>
 </html>
+``
