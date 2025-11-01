@@ -10,8 +10,12 @@
     padding: 0;
     overflow: hidden;
     font-family: Arial, sans-serif;
-    background: url('https://i.imgur.com/5t5OjZ9.png') no-repeat center center fixed;
-    background-size: cover; /* 背景圖片填滿螢幕 */
+    background-color: #111;
+    background-image: 
+      radial-gradient(circle, #ff6b6b 10%, transparent 10%),
+      radial-gradient(circle, #feca57 10%, transparent 10%);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
   }
 
   .chat-container {
@@ -35,17 +39,9 @@
   }
 
   @keyframes floatUp {
-    0% {
-      transform: translateY(100%);
-      opacity: 0;
-    }
-    10% {
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(-150%);
-      opacity: 0;
-    }
+    0% { transform: translateY(100%); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translateY(-150%); opacity: 0; }
   }
 </style>
 </head>
@@ -79,27 +75,15 @@ function createBubble() {
   bubble.className = "chat-bubble";
   bubble.innerText = messages[Math.floor(Math.random() * messages.length)];
   bubble.style.background = colors[Math.floor(Math.random() * colors.length)];
-
-  // 氣泡隨機水平位置
   bubble.style.left = random(0, 90) + "vw";
-  // 初始垂直位置從底部開始
   bubble.style.bottom = "-50px";
-  // 字體大小隨機
   bubble.style.fontSize = random(16, 28) + "px";
-
-  // 動畫速度隨機
   const duration = random(5, 12);
   bubble.style.animationDuration = duration + "s";
-
   document.getElementById("chatContainer").appendChild(bubble);
-
-  // 動畫結束後自動移除
-  setTimeout(() => {
-    bubble.remove();
-  }, duration * 1000);
+  setTimeout(() => bubble.remove(), duration * 1000);
 }
 
-// 每 0.3 秒生成一個氣泡
 setInterval(createBubble, 300);
 </script>
 </body>
