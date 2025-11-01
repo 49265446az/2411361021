@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>關心女友</title>
+<title>全屏愛心文字雨</title>
 <style>
 html, body {
   margin: 0; padding: 0;
@@ -25,7 +25,7 @@ html, body {
   padding: 10px 18px;
   border-radius: 25px;
   color: #fff;
-  font-size: 20px; /* 放大字體 */
+  font-size: 20px;
   opacity: 0;
   white-space: nowrap;
   pointer-events: none;
@@ -46,7 +46,7 @@ html, body {
   font-weight: bold;
   opacity: 0;
   animation: floatHeart 6s linear forwards;
-  font-size: 22px; /* 放大字體 */
+  font-size: 24px;
 }
 
 @keyframes floatHeart {
@@ -60,25 +60,23 @@ html, body {
 <div class="container" id="container"></div>
 
 <script>
-const messages = ["寶貝❤","愛你❤","想你❤","抱抱❤","晚安❤","辛苦了❤","微笑❤","你最棒❤","乖乖❤"];
+const messages = ["寶貝❤","愛你❤","想你❤","抱抱❤","晚安❤","辛苦了❤","微笑❤","你最棒❤"];
 const colors = ["#ff6b6b","#feca57","#48dbfb","#1dd1a1","#5f27cd","#ff9ff3","#ff9f43"];
 const container = document.getElementById('container');
 const centerX = window.innerWidth/2;
 const centerY = window.innerHeight/2;
-const heartRadius = Math.min(window.innerWidth, window.innerHeight)/5; // 中心愛心區域半徑
+const heartRadius = Math.min(window.innerWidth, window.innerHeight)/5; // 愛心區域半徑
 
 function random(min,max){ return Math.random()*(max-min)+min; }
 
-// 漂浮氣泡文字
+// 漂浮氣泡文字，中心區域降低密度
 function createBubble(){
   let x = random(0, window.innerWidth);
-  let y = random(20, window.innerHeight*0.75);
-  
-  // 中心區域降低密度
+  let y = random(0, window.innerHeight); // 全屏上下左右
   const dx = x - centerX;
   const dy = y - centerY;
   const dist = Math.sqrt(dx*dx + dy*dy);
-  if(dist < heartRadius && Math.random()<0.7) return;
+  if(dist < heartRadius && Math.random()<0.7) return; // 中心降低密度
 
   const b = document.createElement('div');
   b.className = 'bubble';
@@ -86,13 +84,13 @@ function createBubble(){
   b.style.left = x+'px';
   b.style.top = y+'px';
   b.style.background = colors[Math.floor(Math.random()*colors.length)];
-  b.style.fontSize = random(18,24)+'px'; // 氣泡字放大
+  b.style.fontSize = random(18,24)+'px';
   b.style.animationDuration = random(4,8)+'s';
   container.appendChild(b);
   setTimeout(()=>b.remove(),8000);
 }
 
-// 愛心文字生成（減少密度）
+// 愛心文字生成，保持分散輪廓
 function createHeartLetters(){
   const heartChars = 15 + Math.floor(Math.random()*5); // 每次生成 15~20 個
   const scale = Math.min(window.innerWidth, window.innerHeight)/4;
@@ -107,7 +105,7 @@ function createHeartLetters(){
     l.innerText = messages[Math.floor(Math.random()*messages.length)];
     l.style.left = x+'px';
     l.style.top = y+'px';
-    l.style.fontSize = random(20,26)+'px'; // 愛心文字放大
+    l.style.fontSize = random(22,28)+'px'; // 放大愛心文字
     container.appendChild(l);
     setTimeout(()=>l.remove(),6000);
   }
