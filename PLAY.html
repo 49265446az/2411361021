@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>愛心文字雨 + 氣泡優化</title>
+<title>愛心文字雨 - 中心優化</title>
 <style>
 html, body {
   margin: 0; padding: 0;
@@ -64,7 +64,7 @@ const colors = ["#ff6b6b","#feca57","#48dbfb","#1dd1a1","#5f27cd","#ff9ff3","#ff
 const container = document.getElementById('container');
 const centerX = window.innerWidth/2;
 const centerY = window.innerHeight/2;
-const heartRadius = Math.min(window.innerWidth, window.innerHeight)/5; // 中間愛心區域半徑
+const heartRadius = Math.min(window.innerWidth, window.innerHeight)/5; // 愛心區域半徑
 
 function random(min,max){ return Math.random()*(max-min)+min; }
 
@@ -77,7 +77,7 @@ function createBubble(){
   const dx = x - centerX;
   const dy = y - centerY;
   const dist = Math.sqrt(dx*dx + dy*dy);
-  if(dist < heartRadius && Math.random()<0.7) return; // 70%概率跳過中間區域
+  if(dist < heartRadius && Math.random()<0.7) return;
 
   const b = document.createElement('div');
   b.className = 'bubble';
@@ -91,9 +91,9 @@ function createBubble(){
   setTimeout(()=>b.remove(),8000);
 }
 
-// 愛心文字隨機生成
+// 愛心文字生成（減少密度）
 function createHeartLetters(){
-  const heartChars = 50; 
+  const heartChars = 15 + Math.floor(Math.random()*5); // 每次生成 15~20 個
   const scale = Math.min(window.innerWidth, window.innerHeight)/4;
 
   for(let i=0;i<heartChars;i++){
@@ -115,9 +115,7 @@ function createHeartLetters(){
 // 高頻生成漂浮氣泡
 setInterval(createBubble,200);
 // 高頻生成愛心文字
-setInterval(()=>{ createHeartLetters() },300);
+setInterval(createHeartLetters,500);
 </script>
 </body>
 </html>
-
-
