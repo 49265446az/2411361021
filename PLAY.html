@@ -3,97 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>自動愛心雨 + 漂浮文字</title>
+<title>滿版漂浮文字 + 愛心文字</title>
 <style>
 html, body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    height: 100%;
-    width: 100%;
-    font-family: Arial, sans-serif;
-    background-color: #111;
-}
-
-/* 大愛心背景 */
-.heart-bg {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 70vmin;
-    height: 70vmin;
-    background: radial-gradient(circle at 50% 50%, #ff6b6b 0%, #ff4757 80%);
-    clip-path: path('M50 15 C50 5, 90 5, 90 35 C90 60, 50 90, 50 90 C50 90, 10 60, 10 35 C10 5, 50 5, 50 15 Z');
-    z-index: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background-color: #111;
+  font-family: Arial, sans-serif;
 }
 
 .chat-container {
-    position: absolute;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    z-index: 1;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* 漂浮文字氣泡 */
 .chat-bubble {
-    position: absolute;
-    padding: 12px 20px;
-    border-radius: 25px;
-    color: #fff;
-    font-size: 18px;
-    opacity: 0;
-    white-space: nowrap;
-    pointer-events: none;
-    animation: floatUp linear forwards;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  position: absolute;
+  padding: 10px 18px;
+  border-radius: 25px;
+  color: #fff;
+  font-size: 16px;
+  opacity: 0;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: floatUp linear forwards;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 @keyframes floatUp {
-    0% { opacity: 0; transform: translateY(20px); }
-    10% { opacity: 1; }
-    100% { transform: translateY(-150%); opacity: 0; }
+  0% { opacity: 0; transform: translateY(20px); }
+  10% { opacity: 1; }
+  100% { transform: translateY(-120%); opacity: 0; }
 }
 
-/* 飄字 */
-.floating-text {
-    position: absolute;
-    font-size: 16px;
-    font-weight: bold;
-    color: #ff9ff3;
-    opacity: 0;
-    animation: floatText 5s linear forwards;
+/* 愛心文字 */
+.heart-letter {
+  position: absolute;
+  color: #ff6b6b;
+  font-weight: bold;
+  opacity: 0;
+  animation: floatHeartLetter linear forwards;
 }
 
-@keyframes floatText {
-    0% { opacity: 0; transform: translateY(100%); }
-    10% { opacity: 1; }
-    100% { opacity: 0; transform: translateY(-150%); }
-}
-
-/* 自動漂浮愛心 */
-.auto-heart {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    background: red;
-    transform: rotate(-45deg);
-    clip-path: polygon(50% 0%, 100% 35%, 75% 100%, 50% 85%, 25% 100%, 0% 35%);
-    opacity: 0;
-    animation: floatHeart linear forwards;
-}
-
-@keyframes floatHeart {
-    0% { transform: translateY(100%) scale(0); opacity: 0; }
-    20% { opacity: 1; scale: 1.2; }
-    100% { transform: translateY(-150%) scale(1); opacity: 0; }
+@keyframes floatHeartLetter {
+  0% { opacity: 0; transform: translateY(0); }
+  10% { opacity: 1; }
+  100% { transform: translateY(-150px); opacity: 0; }
 }
 </style>
 </head>
 <body>
-
-<div class="heart-bg"></div>
 <div class="chat-container" id="chatContainer"></div>
 
 <script>
@@ -112,54 +77,28 @@ const messages = [
   "你是我的小太陽☀️"
 ];
 
-const colors = ["#ff6b6b", "#feca57", "#48dbfb", "#1dd1a1", "#5f27cd", "#ff9ff3", "#ff9f43"];
+const colors = ["#ff6b6b","#feca57","#48dbfb","#1dd1a1","#5f27cd","#ff9ff3","#ff9f43"];
 
-function random(min, max) { return Math.random() * (max - min) + min; }
+function random(min,max){return Math.random()*(max-min)+min;}
 
 // 漂浮文字氣泡
-function createBubble() {
-    const bubble = document.createElement("div");
-    bubble.className = "chat-bubble";
-    bubble.innerText = messages[Math.floor(Math.random() * messages.length)];
-    bubble.style.background = colors[Math.floor(Math.random() * colors.length)];
-    bubble.style.left = random(20, 80) + "vw";
-    bubble.style.top = random(10, 60) + "vh"; 
-    bubble.style.fontSize = random(16, 28) + "px";
-    const duration = random(5, 12);
-    bubble.style.animationDuration = duration + "s";
-    document.getElementById("chatContainer").appendChild(bubble);
-    setTimeout(() => bubble.remove(), duration * 1000);
+function createBubble(){
+  const bubble = document.createElement("div");
+  bubble.className = "chat-bubble";
+  bubble.innerText = messages[Math.floor(Math.random()*messages.length)];
+  bubble.style.background = colors[Math.floor(Math.random()*colors.length)];
+  bubble.style.left = random(0,95)+'vw';
+  bubble.style.top = random(20,70)+'vh'; // 避免太上方或太下方
+  bubble.style.fontSize = random(14,26)+'px';
+  const duration = random(5,12);
+  bubble.style.animationDuration = duration+'s';
+  document.getElementById('chatContainer').appendChild(bubble);
+  setTimeout(()=>bubble.remove(),duration*1000);
 }
 
-// 滿屏飄字
-function createFloatingText() {
-    const text = document.createElement("div");
-    text.className = "floating-text";
-    text.innerText = messages[Math.floor(Math.random() * messages.length)];
-    text.style.left = random(0, 90) + "vw";
-    text.style.fontSize = random(16, 28) + "px";
-    document.getElementById("chatContainer").appendChild(text);
-    setTimeout(() => text.remove(), 5000);
-}
-
-// 自動漂浮愛心
-function createAutoHeart() {
-    const heart = document.createElement("div");
-    heart.className = "auto-heart";
-    heart.style.left = random(10, 90) + "vw";
-    heart.style.width = random(20, 40) + "px";
-    heart.style.height = heart.style.width;
-    const duration = random(4, 10);
-    heart.style.animationDuration = duration + "s";
-    document.getElementById("chatContainer").appendChild(heart);
-    setTimeout(() => heart.remove(), duration * 1000);
-}
-
-// 定時生成
-setInterval(createBubble, 500);
-setInterval(createFloatingText, 400);
-setInterval(createAutoHeart, 700); // 每0.7秒生成愛心
-</script>
-
-</body>
-</html>
+// 愛心文字生成
+function createHeartText(text){
+  const container = document.getElementById('chatContainer');
+  const size = Math.min(window.innerWidth,window.innerHeight)/22; // 每個字大小
+  const scale = 10; // 愛心大小
+  for(let y=-scale;y<=scale
