@@ -2,8 +2,8 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>關心女朋友文字動畫 iPhone 專用</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>關心女朋友文字動畫 - 全螢幕電腦版</title>
 <style>
   body {
     margin: 0;
@@ -11,29 +11,31 @@
     overflow: hidden;
     background: #111; /* 背景色可調整 */
     font-family: Arial, sans-serif;
+    height: 100vh;
+    width: 100vw;
   }
   .chat-container {
     position: relative;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
   }
   .chat-bubble {
     position: absolute;
-    padding: 10px 16px;
+    padding: 12px 20px;
     border-radius: 25px;
     color: #fff;
-    font-size: 16px;
+    font-size: 18px;
     opacity: 0;
     white-space: nowrap;
     pointer-events: none;
-    animation: fadeUp 4s forwards;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    animation: fadeUp 5s forwards;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
   }
 
   @keyframes fadeUp {
     0% { opacity: 0; transform: translateY(20px) scale(0.85); }
-    40% { opacity: 1; transform: translateY(-5px) scale(1.05); }
-    100% { opacity: 0; transform: translateY(-60px) scale(1); }
+    40% { opacity: 1; transform: translateY(-10px) scale(1.05); }
+    100% { opacity: 0; transform: translateY(-80px) scale(1); }
   }
 </style>
 </head>
@@ -48,4 +50,40 @@ const messages = [
   "你最棒了💪",
   "我好想抱抱你🤗",
   "晚安寶貝，做個好夢🌙",
-  "愛你喔❤️"
+  "愛你喔❤️",
+  "今天辛苦了😚",
+  "別忘了微笑😊",
+  "想你了💌"
+];
+
+const colors = ["#ff6b6b", "#feca57", "#48dbfb", "#1dd1a1", "#5f27cd", "#ff9ff3"];
+
+function random(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function createBubble() {
+  const bubble = document.createElement("div");
+  bubble.className = "chat-bubble";
+  bubble.innerText = messages[Math.floor(Math.random() * messages.length)];
+  bubble.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+  // 適合電腦全螢幕範圍
+  bubble.style.left = random(5, 90) + "vw";
+  bubble.style.top = random(70, 95) + "vh";
+  bubble.style.fontSize = random(16, 24) + "px";
+
+  document.getElementById("chatContainer").appendChild(bubble);
+
+  // 動畫結束後自動移除
+  setTimeout(() => {
+    bubble.remove();
+  }, 5000);
+}
+
+// 每 0.4 秒生成一個聊天氣泡
+setInterval(createBubble, 400);
+</script>
+</body>
+</html>
+
