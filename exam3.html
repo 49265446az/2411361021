@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <title>意見回饋表單</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.5; }
+        form { width: 400px; margin: 20px auto; }
+        label { display: block; margin-top: 10px; }
+        input, textarea, select { width: 100%; padding: 5px; margin-top: 5px; }
+        button { margin-top: 10px; padding: 5px 10px; }
+    </style>
+</head>
+<body>
+    <form action="#" method="post">
+        <label for="name">姓名：</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">電子郵件：</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="category">問題分類：</label>
+        <select id="category" name="category">
+            <option value="產品問題">產品問題</option>
+            <option value="服務問題">服務問題</option>
+            <option value="其他">其他</option>
+        </select>
+
+        <label for="message">問題描述：</label>
+        <textarea id="message" name="message" rows="5" required></textarea>
+
+        <button type="submit">提交</button>
+        <button type="reset">重設</button>
+    </form>
+</body>
+</html>
