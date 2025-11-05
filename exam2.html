@@ -4,13 +4,28 @@
     <meta charset="utf-8">
     <title>商品資訊表格</title>
     <style>
-        table { border-collapse: collapse; width: 80%; margin: 20px auto; }
-        th, td { padding: 8px; text-align: center; }
-        caption { font-weight: bold; font-size: 1.2em; margin-bottom: 10px; }
+        table { 
+            border-collapse: collapse; 
+            width: 80%; 
+            margin: 20px auto; 
+            background-color: #f9f9f9; 
+        }
+        th, td { 
+            border: 1px solid #333; /* 明確邊框 */
+            padding: 8px; 
+            text-align: center; 
+        }
+        th { background-color: #1e90ff; color: white; }
+        caption { 
+            font-weight: bold; 
+            font-size: 1.2em; 
+            margin-bottom: 10px; 
+        }
+        tfoot td { background-color: #eee; font-style: italic; }
     </style>
 </head>
 <body>
-    <table frame="border" rules="all">
+    <table>
         <caption>三項商品資訊</caption>
         <thead>
             <tr>
