@@ -1,63 +1,19 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
+<html>
 <head>
-    <meta charset="utf-8">
-    <title>意見回饋表單</title>
-    <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            background-color: #fff8dc; /* 淡米色背景 */
-            color: #333; 
-        }
-        form { 
-            width: 400px; 
-            margin: 50px auto; 
-            padding: 20px; 
-            background-color: #ffffff; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        label { display: block; margin-top: 10px; font-weight: bold; }
-        input, textarea, select { 
-            width: 100%; 
-            padding: 8px; 
-            margin-top: 5px; 
-            border: 1px solid #ccc; 
-            border-radius: 5px;
-        }
-        button { 
-            margin-top: 15px; 
-            padding: 8px 15px; 
-            border: none; 
-            border-radius: 5px; 
-            cursor: pointer; 
-        }
-        button[type="submit"] { background-color: #1e90ff; color: white; }
-        button[type="submit"]:hover { background-color: #1c86ee; }
-        button[type="reset"] { background-color: #ff6347; color: white; margin-left: 10px; }
-        button[type="reset"]:hover { background-color: #ff4500; }
-    </style>
+<title>feedtrack.html</title>
 </head>
 <body>
-    <form action="#" method="post">
-        <label for="name">姓名：</label>
-        <input type="text" id="name" name="name" placeholder="請輸入姓名" required>
-
-        <label for="email">電子郵件：</label>
-        <input type="email" id="email" name="email" placeholder="請輸入Email" required>
-
-        <label for="category">問題分類：</label>
-        <select id="category" name="category">
-            <option value="產品問題">產品問題</option>
-            <option value="服務問題">服務問題</option>
-            <option value="其他">其他</option>
-        </select>
-
-        <label for="message">問題描述：</label>
-        <textarea id="message" name="message" rows="5" placeholder="請描述您的問題" required></textarea>
-
-        <button type="submit">提交</button>
-        <button type="reset">重設</button>
-    </form>
+<h1>意見回饋表單</h1>
+<form>
+姓名：<input type="text" name="name"><br>
+電子郵件：<input type="email" email="email"><br>
+聯絡電話：<input type="call" name="call"><br>
+問題描述：<input type="text"><br>
+問題分類：<select><option>商品</option><option>
+  服務</option><option>網站</option></select><br>
+  <button type="submit">提交</button>
+  <button type="submit">重新</button>
+  <button type="submit">錯誤修正</button>
+</form>
 </body>
 </html>
