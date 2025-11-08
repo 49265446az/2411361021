@@ -1,61 +1,20 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-    <meta charset="utf-8">
-    <title>商品資訊表格</title>
-    <style>
-        table { 
-            border-collapse: collapse; 
-            width: 80%; 
-            margin: 20px auto; 
-            background-color: #f9f9f9; 
-        }
-        th, td { 
-            border: 1px solid #333; /* 明確邊框 */
-            padding: 8px; 
-            text-align: center; 
-        }
-        th { background-color: #1e90ff; color: white; }
-        caption { 
-            font-weight: bold; 
-            font-size: 1.2em; 
-            margin-bottom: 10px; 
-        }
-        tfoot td { background-color: #eee; font-style: italic; }
-    </style>
-</head>
-<body>
-    <table>
-        <caption>三項商品資訊</caption>
-        <thead>
-            <tr>
-                <th>商品名稱</th>
-                <th>價格</th>
-                <th>庫存量</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>IPHONE 15</td>
-                <td>21000 元</td>
-                <td>7777777</td>
-            </tr>
-            <tr>
-                <td>IPHONE 16</td>
-                <td>34000 元</td>
-                <td>88888888</td>
-            </tr>
-            <tr>
-                <td>IPHONE 17</td>
-                <td>41000 元</td>
-                <td>9999999</td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3">資料更新日期：2025/11/08</td>
-            </tr>
-        </tfoot>
-    </table>
+<html>
+  <head>
+    <title>product.html</title>
+  </head>
+  <body>
+    <h1>商品資訊表格</h1>
+<table border="1" frame="border" rules="all">
+<caption>電子產品清單</caption>
+<thead>
+<tr><th>編號</th><th>型號</th><th>價格</th></tr>
+</thead>
+<tbody>
+<tr><th>00001</th><th>iPhone15</th><th>29999</th></tr>
+<tr><th>00002</th><th>IPHONE16</th><th>39999</th></tr>
+<tr><th>00003</th><th>IPHONE17</th><th>49999</th></tr>
+ <td colspan="3">註：以上價格僅供參考</td>
+   </tbody>
 </body>
 </html>
