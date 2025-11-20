@@ -1,91 +1,22 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <title>迷你商城平台 Demo</title>
+  <meta charset="UTF-8">
+  <title>迷你商城 - 買家頁</title>
   <style>
-    body {
-      font-family: Arial;
-      margin: 0;
-      background: #f5f5f5;
-    }
-
-    header {
-      background: #ee4d2d;
-      padding: 10px 20px;
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    header button {
-      background: white;
-      border: none;
-      padding: 5px 10px;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-
-    .container {
-      padding: 20px;
-    }
-
-    .category button {
-      margin-right: 10px;
-      padding: 5px 10px;
-      cursor: pointer;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    .card {
-      background: white;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.1);
-    }
-
-    .card img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-    }
-
-    .card button {
-      margin-top: 5px;
-      width: 100%;
-      padding: 5px;
-    }
-
-    .hidden { display: none; }
-
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.4);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-box {
-      background: white;
-      padding: 20px;
-      width: 300px;
-      border-radius: 10px;
-    }
-
-    input, textarea, select {
-      width: 100%;
-      margin-bottom: 8px;
-      padding: 5px;
-    }
+    body { font-family: Arial; margin:0; background:#f5f5f5;}
+    header { background:#ee4d2d; padding:10px 20px; color:white; display:flex; justify-content:space-between; align-items:center;}
+    header button { background:white; border:none; padding:5px 10px; cursor:pointer; border-radius:5px;}
+    .container { padding:20px;}
+    .category button { margin-right:10px; padding:5px 10px; cursor:pointer; background:white; border-radius:5px; border:1px solid #ccc;}
+    .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:15px; margin-top:20px;}
+    .card { background:white; padding:10px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,.1);}
+    .card img { width:100%; height:150px; object-fit:cover; border-radius:5px;}
+    .card button { margin-top:5px; width:100%; padding:5px; background:#ee4d2d; color:white; border:none; border-radius:5px; cursor:pointer;}
+    .modal { position:fixed; inset:0; background:rgba(0,0,0,.4); display:flex; justify-content:center; align-items:center;}
+    .modal-box { background:white; padding:20px; width:300px; border-radius:10px;}
+    .hidden { display:none;}
+    input, textarea { width:100%; margin-bottom:8px; padding:5px;}
   </style>
 </head>
 <body>
@@ -95,7 +26,6 @@
   <div>
     <span id="userStatus">訪客</span>
     <button onclick="openLogin()">登入</button>
-    <button onclick="openAdmin()">賣家後台</button>
   </div>
 </header>
 
@@ -125,23 +55,6 @@
   </div>
 </div>
 
-<!-- 賣家後台 -->
-<div id="adminModal" class="modal hidden">
-  <div class="modal-box">
-    <h3>賣家上架商品</h3>
-    <input id="title" placeholder="商品名稱">
-    <textarea id="desc" placeholder="商品內容"></textarea>
-    <input id="img" placeholder="圖片連結 (可貼網址)">
-    <select id="cat">
-      <option>服飾</option>
-      <option>3C</option>
-      <option>美妝</option>
-    </select>
-    <button onclick="addProduct()">上架</button>
-    <button onclick="closeAll()">關閉</button>
-  </div>
-</div>
-
 <script>
 let products = JSON.parse(localStorage.getItem("products")) || [];
 let currentUser = localStorage.getItem("user") || null;
@@ -166,9 +79,6 @@ function render(category="全部"){
       <p>${p.desc}</p>
       <button onclick="chat()">聊聊</button>
       <button onclick="buy()">購買</button>
-      ${currentUser==="admin" ? 
-       `<button onclick="del(${i})">刪除</button>` : ""
-      }
     </div>
     `
   })
@@ -177,28 +87,20 @@ function render(category="全部"){
 function filterCategory(cat){ render(cat) }
 
 function chat(){
-  alert("這是即時聊聊的模擬")
+  alert("即時聊聊模擬");
 }
 
 function buy(){
   if(!currentUser){
-    alert("請先登入才能下單")
+    alert("請先登入才能下單");
     openLogin();
-  }else{
-    alert("已下單，模擬成功")
+  } else {
+    alert("已下單，模擬成功");
   }
 }
 
 function openLogin(){
   document.getElementById("loginModal").classList.remove("hidden");
-}
-
-function openAdmin(){
-  if(currentUser==="admin"){
-    document.getElementById("adminModal").classList.remove("hidden");
-  }else{
-    alert("只有賣家才能進入")
-  }
 }
 
 function closeAll(){
@@ -208,12 +110,7 @@ function closeAll(){
 function login(){
   const u = username.value;
   const p = password.value;
-
-  if(!u || !p){
-    alert("請輸入帳密");
-    return;
-  }
-
+  if(!u || !p){ alert("請輸入帳密"); return;}
   currentUser = u;
   localStorage.setItem("user", u);
   document.getElementById("userStatus").innerText = u;
@@ -221,29 +118,9 @@ function login(){
   render();
 }
 
-function addProduct(){
-  const p = {
-    title: title.value,
-    desc: desc.value,
-    img: img.value || "https://via.placeholder.com/200",
-    cat: cat.value
-  }
-  products.push(p);
-  save();
-  alert("上架成功!");
-  closeAll();
-  render();
-}
-
-function del(i){
-  products.splice(i,1);
-  save();
-  render();
-}
-
 render();
-
 </script>
 
 </body>
 </html>
+
