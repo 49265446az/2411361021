@@ -1,15 +1,117 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>我的網頁</title>
-  </head>
-  <body>
-  <form method="post" action="api.php">
-    <p>帳號：<input typc="text" namc="uscrName" sizc="20"></p>
-    <p>密碼：<input type="password" name="userPWD" size="20"></p>
-    <input type="submit" value="提交">
-      <input type="reset"value="重新翰入”＞
-  </form>
-  </body>
-<html>
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Shopee 傳訊一鍵工具（含工廠圖片）</title>
+  <style>
+    :root{--bg:#071022;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8}
+    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans",Helvetica,Arial}
+    body{background:linear-gradient(180deg,#071024,#071422);color:#e6eef6;display:flex;align-items:center;justify-content:center;padding:20px}
+    .card{width:100%;max-width:920px;background:var(--card);border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.7)}
+    h1{margin:0 0 6px;font-size:20px}
+    p.lead{margin:0 0 16px;color:var(--muted);font-size:13px}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);color:inherit;font-size:14px}
+    textarea{min-height:90px}
+    .row{display:flex;gap:8px}
+    .controls{display:flex;gap:8px;margin-top:12px}
+    button{background:var(--accent);border:none;padding:10px 14px;border-radius:10px;color:#012;cursor:pointer;font-weight:600}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+    .result{margin-top:12px;padding:12px;border-radius:8px;background:rgba(255,255,255,0.03);font-size:13px;color:var(--muted)}
+    .preview{margin-top:12px;display:flex;gap:12px;align-items:flex-start}
+    .preview img{max-width:320px;border-radius:8px;border:1px solid rgba(255,255,255,0.04)}
+    .help{font-size:12px;color:var(--muted);margin-top:8px}
+    @media (max-width:900px){.preview{flex-direction:column} .preview img{max-width:100%}}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Shopee 傳訊一鍵工具（含工廠圖片）</h1>
+    <p class="lead">點一次按鈕：自動複製訊息、打開蝦皮聊聊頁面，並在新視窗顯示工廠圖片（可拖曳至聊聊上傳區）。為了安全與合規，需在蝦皮頁面手動貼上並按送出。</p>
+
+    <label for="productUrl">商品連結或聊聊連結（建議填商品連結）</label>
+    <input id="productUrl" type="url" placeholder="https://shopee.tw/..." />
+
+    <label style="margin-top:10px">要發送的訊息（可編輯）</label>
+    <textarea id="message">您好店長，我是彰化社頭專業襪廠業務負責人敝姓詹，生產多種襪子、內褲、發熱衣、毛帽、棒球帽等。我們工廠通過 SMETA 認證，若貴司有批發或合作需求，是否方便提供聯絡方式或安排時間洽談？謝謝您。</textarea>
+
+    <div class="preview">
+      <div>
+        <label>工廠圖片預覽（來源：本機檔案）</label>
+        <img id="factoryImg" src="/mnt/data/本工廠.png" alt="工廠外觀與位置圖" />
+      </div>
+      <div style="flex:1">
+        <label>使用說明</label>
+        <div class="result">1. 若要傳送圖片：在右側預覽圖上按右鍵另存或直接從此分頁拖曳至蝦皮聊聊的貼圖上傳區。<br>2. 若只要文字：按「只複製文字」後到蝦皮貼上並送出。<br>3. 欲同時發多筆：可改為批次模式（需我幫你改）。</div>
+        <div class="controls">
+          <button id="prepareBtn">準備並開啟聊聊</button>
+          <button id="copyBtn" class="btn-ghost">只複製文字</button>
+          <button id="saveImgBtn" class="btn-ghost">另存圖片</button>
+        </div>
+        <div class="help">備註：此頁面的圖片路徑為本機檔案（/mnt/data/本工廠.png）。若要分享給其他裝置，請先下載後再上傳到雲端或手機。</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const productUrl = document.getElementById('productUrl');
+  const messageEl = document.getElementById('message');
+  const prepareBtn = document.getElementById('prepareBtn');
+  const copyBtn = document.getElementById('copyBtn');
+  const saveImgBtn = document.getElementById('saveImgBtn');
+  const factoryImg = document.getElementById('factoryImg');
+
+  function extractIdsFromUrl(url){
+    try{
+      const u = new URL(url);
+      const path = u.pathname.split('/').filter(Boolean);
+      const nums = path.map(p=>p.replace(/[^0-9]/g,'')).filter(Boolean);
+      if(nums.length>=2){
+        return {shop_id: nums[0], item_id: nums[1]};
+      }
+      const s = u.searchParams.get('shopid')||u.searchParams.get('shop_id');
+      const i = u.searchParams.get('itemid')||u.searchParams.get('item_id');
+      if(s && i) return {shop_id:s, item_id:i};
+      return null;
+    }catch(e){return null}
+  }
+
+  function buildChatUrlFromProduct(url){
+    const ids = extractIdsFromUrl(url);
+    if(ids && ids.shop_id && ids.item_id){
+      return `https://shopee.tw/buyer/chat?shop_id=${ids.shop_id}&item_id=${ids.item_id}`;
+    }
+    try{const u=new URL(url);return `${u.origin}/buyer/chat`}catch(e){return 'https://shopee.tw/buyer/chat';}
+  }
+
+  prepareBtn.addEventListener('click', async ()=>{
+    const url = productUrl.value.trim();
+    const msg = messageEl.value.trim();
+    if(!url){ alert('請先填入商品連結或聊聊連結'); return; }
+    try{ await navigator.clipboard.writeText(msg); }catch(e){ alert('無法複製文字到剪貼簿，請手動複製。'); }
+    const chatUrl = buildChatUrlFromProduct(url);
+    // open image in new tab for easy drag/upload
+    const imgSrc = factoryImg.src;
+    window.open(imgSrc, '_blank');
+    window.open(chatUrl, '_blank');
+  });
+
+  copyBtn.addEventListener('click', async ()=>{
+    const msg = messageEl.value.trim();
+    try{ await navigator.clipboard.writeText(msg); alert('訊息已複製到剪貼簿，請到蝦皮貼上並送出。'); }
+    catch(e){ alert('無法複製，請手動複製文字。'); }
+  });
+
+  saveImgBtn.addEventListener('click', ()=>{
+    const link = document.createElement('a');
+    link.href = factoryImg.src;
+    link.download = '本工廠.png';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  });
+</script>
+</body>
+</html>
+
