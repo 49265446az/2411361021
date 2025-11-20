@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>迷你商城 - 買家頁</title>
-  <style>
-    body { font-family: Arial; margin:0; background:#f5f5f5;}
-    header { background:#ee4d2d; padding:10px 20px; color:white; display:flex; justify-content:space-between; align-items:center;}
-    header button { background:white; border:none; padding:5px 10px; cursor:pointer; border-radius:5px;}
-    .container { padding:20px;}
-    .category button { margin-right:10px; padding:5px 10px; cursor:pointer; background:white; border-radius:5px; border:1px solid #ccc;}
-    .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:15px; margin-top:20px;}
-    .card { background:white; padding:10px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,.1);}
-    .card img { width:100%; height:150px; object-fit:cover; border-radius:5px;}
-    .card button { margin-top:5px; width:100%; padding:5px; background:#ee4d2d; color:white; border:none; border-radius:5px; cursor:pointer;}
-    .modal { position:fixed; inset:0; background:rgba(0,0,0,.4); display:flex; justify-content:center; align-items:center;}
-    .modal-box { background:white; padding:20px; width:300px; border-radius:10px;}
-    .hidden { display:none;}
-    input, textarea { width:100%; margin-bottom:8px; padding:5px;}
-  </style>
+<meta charset="UTF-8">
+<title>迷你商城 - 買家頁</title>
+<style>
+  body { font-family: Arial; margin:0; background:#f5f5f5;}
+  header { background:#ee4d2d; padding:10px 20px; color:white; display:flex; justify-content:space-between; align-items:center;}
+  header h2 { margin:0; }
+  header button { background:white; border:none; padding:5px 10px; cursor:pointer; border-radius:5px; }
+  .container { padding:20px;}
+  .category { margin-bottom:15px; }
+  .category button { margin-right:10px; padding:5px 10px; cursor:pointer; background:white; border-radius:5px; border:1px solid #ccc;}
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:15px; }
+  .card { background:white; padding:10px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,.1); display:flex; flex-direction:column; justify-content:space-between;}
+  .card img { width:100%; height:150px; object-fit:cover; border-radius:5px; }
+  .card h4 { margin:5px 0; font-size:16px; }
+  .card p { font-size:14px; color:#555; flex-grow:1; }
+  .card button { margin-top:5px; padding:5px; background:#ee4d2d; color:white; border:none; border-radius:5px; cursor:pointer;}
+  .modal { position:fixed; inset:0; background:rgba(0,0,0,.4); display:flex; justify-content:center; align-items:center; }
+  .modal-box { background:white; padding:20px; width:300px; border-radius:10px; }
+  .hidden { display:none; }
+  input { width:100%; margin-bottom:8px; padding:5px; }
+</style>
 </head>
 <body>
 
@@ -30,8 +34,6 @@
 </header>
 
 <div class="container">
-
-  <!-- 分類 -->
   <div class="category">
     <button onclick="filterCategory('全部')">全部</button>
     <button onclick="filterCategory('服飾')">服飾</button>
@@ -39,15 +41,12 @@
     <button onclick="filterCategory('美妝')">美妝</button>
   </div>
 
-  <!-- 商品區 -->
   <div class="grid" id="productList"></div>
-
 </div>
 
-<!-- 登入 / 註冊 -->
 <div id="loginModal" class="modal hidden">
   <div class="modal-box">
-    <h3>會員登入 / 註冊</h3>
+    <h3>登入 / 註冊</h3>
     <input id="username" placeholder="帳號">
     <input id="password" type="password" placeholder="密碼">
     <button onclick="login()">登入 / 註冊</button>
@@ -56,66 +55,60 @@
 </div>
 
 <script>
-let products = JSON.parse(localStorage.getItem("products")) || [];
-let currentUser = localStorage.getItem("user") || null;
-
-document.getElementById("userStatus").innerText = currentUser ? currentUser : "訪客";
-
-function save(){
+// 初始化商品資料
+let products = JSON.parse(localStorage.getItem("products") || "[]");
+if(products.length === 0){
+  products = [
+    {title:"短袖T恤", desc:"舒適純棉短袖", img:"https://via.placeholder.com/200?text=T%E6%81%A4", cat:"服飾"},
+    {title:"耳機", desc:"藍牙降噪耳機", img:"https://via.placeholder.com/200?text=%E8%80%B3%E6%A9%9F", cat:"3C"},
+    {title:"口紅", desc:"持久紅色口紅", img:"https://via.placeholder.com/200?text=%E5%8F%A3%E7%B4%85", cat:"美妝"}
+  ];
   localStorage.setItem("products", JSON.stringify(products));
 }
+
+let currentUser = localStorage.getItem("user") || null;
+document.getElementById("userStatus").innerText = currentUser ? currentUser : "訪客";
+
+function save(){ localStorage.setItem("products", JSON.stringify(products)); }
 
 function render(category="全部"){
   const list = document.getElementById("productList");
   list.innerHTML = "";
-
-  products
-    .filter(p => category==="全部" || p.cat===category)
-    .forEach((p,i)=>{
-    list.innerHTML += `
-    <div class="card">
+  products.filter(p => category==="全部" || p.cat===category)
+          .forEach(p=>{
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
       <img src="${p.img}">
       <h4>${p.title}</h4>
       <p>${p.desc}</p>
       <button onclick="chat()">聊聊</button>
       <button onclick="buy()">購買</button>
-    </div>
-    `
-  })
+    `;
+    list.appendChild(card);
+  });
 }
 
-function filterCategory(cat){ render(cat) }
+function filterCategory(cat){ render(cat); }
 
-function chat(){
-  alert("即時聊聊模擬");
-}
+function chat(){ alert("即時聊聊模擬"); }
 
 function buy(){
-  if(!currentUser){
-    alert("請先登入才能下單");
-    openLogin();
-  } else {
-    alert("已下單，模擬成功");
-  }
+  if(!currentUser){ alert("請先登入"); openLogin(); }
+  else alert("已下單，模擬成功");
 }
 
-function openLogin(){
-  document.getElementById("loginModal").classList.remove("hidden");
-}
-
-function closeAll(){
-  document.querySelectorAll(".modal").forEach(m=>m.classList.add("hidden"));
-}
+function openLogin(){ document.getElementById("loginModal").classList.remove("hidden"); }
+function closeAll(){ document.querySelectorAll(".modal").forEach(m=>m.classList.add("hidden")); }
 
 function login(){
-  const u = username.value;
-  const p = password.value;
-  if(!u || !p){ alert("請輸入帳密"); return;}
+  const u = document.getElementById("username").value;
+  const p = document.getElementById("password").value;
+  if(!u || !p){ alert("請輸入帳號密碼"); return; }
   currentUser = u;
   localStorage.setItem("user", u);
   document.getElementById("userStatus").innerText = u;
   closeAll();
-  render();
 }
 
 render();
