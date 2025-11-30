@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>旋轉精緻聖誕樹</title>
+<style>
+  :root{
+    --bg:#081017;
+    --tree-dark:#0b5b2a;
+    --tree-mid:#0f7a38;
+    --tree-light:#33a64a;
+    --wood:#7a4b2f;
+    --star:#ffd84d;
+  }
+  html,body{
+    height:100%;
+    margin:0;
+    background: radial-gradient(1000px 600px at 10% 10%, #0b2333 0%, var(--bg) 40%, #02060a 100%);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans CJK TC", "Helvetica Neue", Arial;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  /* 中央容器 */
+  .stage{
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    user-select:none;
+    pointer-events:none;
+  }
+
+  /* 讓 SVG 在容器中大小合適並可旋轉 */
+  .tree-wrap{
+    width:min(56vmin,720px);
+    height:auto;
+    transform-origin:center center;
+    will-change: transform;
+    /* 緩慢旋轉 */
+    animation: rotateStage 18s linear infinite;
+    /* subtle 3D tilt for depth */
+    transform-style:preserve-3d;
+  }
+
+  /* 若使用者偏好減少動作，暫停旋轉與閃爍 */
+  @media (prefers-reduced-motion: reduce) {
+    .tree-wrap { animation: none; transform: none; }
+    .blink { animation: none !important; opacity:1 !important;}
+    .twinkle { animation: none !important; opacity:1 !important;}
+  }
+
+  @keyframes rotateStage{
+    0%   { transform: rotateZ(-4deg)   rotateX(0.5deg); }
+    50%  { transform: rotateZ(4deg)    rotateX(0.2deg); }
+    100% { transform: rotateZ(-4deg)   rotateX(0.5deg); }
+  }
+
+  /* small bounce to star / lights for life */
+  .star-glow { filter: drop-shadow(0 0 6px rgba(255,216,77,0.9)); }
+  .star-core { transform-origin:center; animation: starPulse 2.2s ease-in-out infinite; }
+  @keyframes starPulse {
+    0%,100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(255,216,77,0.55)); }
+    50%     { transform: scale(1.08); filter: drop-shadow(0 0 14px rgba(255,216,77,0.9)); }
+  }
+
+  /* 燈泡閃爍（不同時序） */
+  .blink { animation: blink 1.6s linear infinite; opacity:0.95; }
+  .blink.delay1 { animation-delay: 0.18s; }
+  .blink.delay2 { animation-delay: 0.36s; }
+  .blink.delay3 { animation-delay: 0.6s; }
+  .blink.delay4 { animation-delay: 0.9s; }
+
+  @keyframes blink {
+    0% { opacity: 0.1; transform: translateY(0) scale(1); filter:brightness(0.9); }
+    10% { opacity: 1; transform: translateY(-2px) scale(1.06); filter:brightness(1.3); }
+    50% { opacity: 0.7; transform: translateY(0) scale(1); filter:brightness(1); }
+    100%{ opacity: 0.12; transform: translateY(0) scale(0.98); filter:brightness(0.9);}
+  }
+
+  /* 裝飾小球的輕微浮動 */
+  .twinkle { animation: floaty 4.5s ease-in-out infinite; }
+  .twinkle.s2 { animation-duration:3.6s; animation-delay:0.2s; }
+  @keyframes floaty {
+    0% { transform: translateY(0) rotate(0); }
+    50% { transform: translateY(-4px) rotate(6deg); }
+    100% { transform: translateY(0) rotate(0); }
+  }
+
+  /* 底部陰影 */
+  .ground-shadow {
+    width:min(56vmin,720px);
+    height:30vmin;
+    max-height:280px;
+    margin-top:-8vmin;
+    filter: blur(24px) brightness(0.3);
+    opacity:0.5;
+    pointer-events:none;
+  }
+
+  /* 說明小字（可移除） */
+  .caption{
+    position:fixed;
+    left:12px;
+    bottom:12px;
+    color:rgba(255,255,255,0.65);
+    font-size:13px;
+    pointer-events:none;
+    user-select:none;
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="tree-wrap" aria-hidden="true">
+      <!-- SVG 聖誕樹 -->
+      <svg viewBox="0 0 600 800" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- 背景微光圓 -->
+        <defs>
+          <radialGradient id="bgGlow" cx="50%" cy="35%">
+            <stop offset="0%" stop-color="#183744" stop-opacity="0.85"/>
+            <stop offset="55%" stop-color="#081017" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#02060a" stop-opacity="1"/>
+          </radialGradient>
+
+          <linearGradient id="treeGrad" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#2bb14a"/>
+            <stop offset="60%" stop-color="#0f7a38"/>
+            <stop offset="100%" stop-color="#073c22"/>
+          </linearGradient>
+
+          <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="8" result="b"/>
+            <feBlend in="SourceGraphic" in2="b"/>
+          </filter>
+
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="6" result="g"/>
+            <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- 整體微光 -->
+        <rect x="0" y="0" width="600" height="800" fill="url(#bgGlow)"></rect>
+
+        <!-- 樹幹陰影 -->
+        <ellipse cx="300" cy="720" rx="160" ry="28" fill="rgba(0,0,0,0.45)"></ellipse>
+
+        <!-- 三層樹冠：使用三個三角梯度製造層次 -->
+        <g transform="translate(0,40)">
+          <!-- 最下層 -->
+          <path d="M300 600 L80 360 L520 360 Z" fill="url(#treeGrad)" opacity="0.98" filter="url(#soft)"></path>
+          <!-- 中層 -->
+          <path d="M300 480 L120 280 L480 280 Z" fill="url(#treeGrad)" opacity="0.98"></path>
+          <!-- 上層 -->
+          <path d="M300 360 L190 180 L410 180 Z" fill="url(#treeGrad)" opacity="0.98"></path>
+
+          <!-- 樹幹 -->
+          <rect x="260" y="600" width="80" height="90" rx="10" ry="10" fill="url(#treeGrad)" style="fill:#7a4b2f;"></rect>
+          <rect x="260" y="600" width="80" height="90" rx="10" ry="10" fill="#7a4b2f" opacity="0.95"></rect>
+        </g>
+
+        <!-- 裝飾：燈串（用 path 放置多個小圓點） -->
+        <g id="garlands" transform="translate(0,40)">
+          <!-- 每條燈串用多個圓和線條模擬 -->
+          <path d="M120 320 C200 360, 360 360, 440 320" fill="none" stroke="#2c1e14" stroke-width="4" stroke-linecap="round" opacity="0.8"></path>
+          <g class="blink">
+            <circle cx="140" cy="320" r="8" fill="#ffef99" class="blink delay1"></circle>
+            <circle cx="180" cy="328" r="7" fill="#ff9fb3" class="blink delay2"></circle>
+            <circle cx="220" cy="334" r="6" fill="#6ee7ff" class="blink delay3"></circle>
+            <circle cx="260" cy="336" r="7" fill="#ffd86b" class="blink delay4"></circle>
+            <circle cx="300" cy="336" r="7" fill="#ffd86b" class="blink delay2"></circle>
+            <circle cx="340" cy="334" r="6" fill="#ff9fb3" class="blink delay3"></circle>
+            <circle cx="380" cy="328" r="7" fill="#6ee7ff" class="blink delay1"></circle>
+            <circle cx="420" cy="320" r="8" fill="#ffef99" class="blink delay4"></circle>
+          </g>
+
+          <path d="M90 420 C170 460, 430 460, 510 420" fill="none" stroke="#2c1e14" stroke-width="4" stroke-linecap="round" opacity="0.9"></path>
+          <g class="blink">
+            <circle cx="110" cy="420" r="7" fill="#ffd86b" class="blink delay2"></circle>
+            <circle cx="160" cy="428" r="6" fill="#ff9fb3" class="blink delay3"></circle>
+            <circle cx="210" cy="434" r="7" fill="#6ee7ff" class="blink delay1"></circle>
+            <circle cx="260" cy="436" r="6" fill="#ffef99" class="blink delay4"></circle>
+            <circle cx="310" cy="436" r="7" fill="#ff9fb3" class="blink delay2"></circle>
+            <circle cx="360" cy="434" r="6" fill="#ffd86b" class="blink delay3"></circle>
+            <circle cx="410" cy="428" r="7" fill="#6ee7ff" class="blink delay1"></circle>
+            <circle cx="460" cy="420" r="7" fill="#ffef99" class="blink delay4"></circle>
+          </g>
+
+          <path d="M160 240 C240 280, 360 280, 440 240" fill="none" stroke="#2c1e14" stroke-width="3" stroke-linecap="round" opacity="0.85"></path>
+          <g class="blink">
+            <circle cx="180" cy="240" r="6" fill="#6ee7ff" class="blink delay3"></circle>
+            <circle cx="220" cy="248" r="6" fill="#ff9fb3" class="blink delay1"></circle>
+            <circle cx="260" cy="252" r="6" fill="#ffd86b" class="blink delay4"></circle>
+            <circle cx="300" cy="252" r="6" fill="#ffef99" class="blink delay2"></circle>
+            <circle cx="340" cy="252" r="6" fill="#ff9fb3" class="blink delay3"></circle>
+            <circle cx="380" cy="248" r="6" fill="#6ee7ff" class="blink delay1"></circle>
+          </g>
+        </g>
+
+        <!-- 彩球裝飾（少量、避免 DOM 過多） -->
+        <g id="ornaments" transform="translate(0,40)">
+          <circle cx="180" cy="380" r="12" fill="#ff6b6b" class="twinkle s2" />
+          <circle cx="240" cy="430" r="14" fill="#ffd86b" class="twinkle" />
+          <circle cx="330" cy="420" r="13" fill="#9b5bff" class="twinkle s2" />
+          <circle cx="420" cy="370" r="12" fill="#48dbfb" class="twinkle" />
+          <circle cx="320" cy="300" r="10" fill="#ff9ff3" class="twinkle s2" />
+        </g>
+
+        <!-- 樹頂星星 -->
+        <g transform="translate(300,145)">
+          <g class="star-glow">
+            <polygon class="star-core" points="0,-28 8,-6 30,-6 12,6 20,28 0,14 -20,28 -12,6 -30,-6 -8,-6" fill="url(#starGrad)" stroke="#ffecb5" stroke-width="1" />
+          </g>
+          <!-- 小光暈 -->
+          <ellipse cx="0" cy="-8" rx="48" ry="16" fill="rgba(255,216,77,0.12)"></ellipse>
+        </g>
+
+        <!-- 最下方的柔和前景陰影（提升深度） -->
+        <g transform="translate(0,640)">
+          <ellipse cx="300" cy="70" rx="190" ry="36" fill="rgba(0,0,0,0.48)"></ellipse>
+        </g>
+
+      </svg>
+
+      <!-- 底部放一個柔和陰影（CSS 背景圖） -->
+      <svg class="ground-shadow" viewBox="0 0 600 200" preserveAspectRatio="xMidYMid meet" style="display:block;">
+        <defs>
+          <linearGradient id="gSh" x1="0" x2="1">
+            <stop offset="0%" stop-color="#000" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <ellipse cx="300" cy="80" rx="300" ry="80" fill="url(#gSh)"></ellipse>
+      </svg>
+
+    </div>
+  </div>
+
+  <div class="caption">精緻旋轉聖誕樹 — CSS 動畫 + SVG 向量繪圖（可在任意分辨率順暢顯示）</div>
+
+  <!-- 可選：用 JS 加一些互動（點一下短暫放大） -->
+  <script>
+    (function(){
+      const wrap = document.querySelector('.tree-wrap');
+      let scaleBoost = false;
+      // 簡單的點擊放大效果，3 秒內回復
+      document.addEventListener('click', ()=> {
+        if (scaleBoost) return;
+        scaleBoost = true;
+        wrap.style.transition = 'transform 0.45s cubic-bezier(.2,.9,.2,1)';
+        wrap.style.transform += ' scale(1.06)';
+        setTimeout(()=> {
+          wrap.style.transform = '';
+          wrap.style.transition = '';
+          scaleBoost = false;
+        }, 1000);
+      });
+    })();
+  </script>
+</body>
+</html>
