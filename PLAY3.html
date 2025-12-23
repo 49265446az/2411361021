@@ -1,316 +1,186 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>360° 旋轉 — 超精緻白色聖誕樹</title>
-<style>
-  :root{
-    --bg:#07121a;
-    --panel:#0b1720;
-    --tree-white-1: #ffffff;
-    --tree-white-2: #f3f7fb;
-    --ice: #dff6ff;
-    --glass: rgba(255,255,255,0.9);
-    --wood:#a1887f;
-    --star:#fff7d1;
-    --accent1:#b6f0ff;
-    --accent2:#ffd6e6;
-    --accent3:#d1e8ff;
-  }
+  <meta charset="UTF-8">
+  <title>MBTI 人格分析測驗</title>
 
-  html,body{
-    height:100%;
-    margin:0;
-    background:
-      radial-gradient(800px 400px at 10% 10%, rgba(18,28,38,0.65), transparent 10%),
-      linear-gradient(180deg, #08121a 0%, #02101a 45%, #01060a 100%);
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans CJK TC", Arial;
-    color: #fff;
-    -webkit-font-smoothing:antialiased;
-  }
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  /* 中央舞台與透視 */
-  .stage {
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:4vmin;
-    box-sizing:border-box;
-  }
+  <!-- CSS -->
+  <style>
+    body {
+      background-color: #f5f7fa;
+    }
 
-  .scene {
-    width:min(62vmin,720px);
-    perspective:1200px; /* 調整 3D 視角深度 */
-    perspective-origin:50% 40%;
-  }
+    h1, h2 {
+      font-weight: bold;
+    }
 
-  /* 旋轉包裹：3D preserve */
-  .spin-wrap {
-    width:100%;
-    transform-style:preserve-3d;
-    will-change: transform;
-    margin:0 auto;
-    /* 360° 旋轉：修改 duration (12s) 可加快或減慢 */
-    animation: spin360 14s linear infinite;
-  }
+    .card {
+      padding: 10px;
+    }
 
-  @keyframes spin360 {
-    0%   { transform: rotateY(0deg) rotateX(0.5deg); }
-    100% { transform: rotateY(360deg) rotateX(0.5deg); }
-  }
-
-  /* 若使用者設定減少動畫，停止旋轉與閃爍 */
-  @media (prefers-reduced-motion: reduce) {
-    .spin-wrap { animation: none; transform: rotateY(0deg); }
-    .blink { animation: none; opacity:1; }
-    .star-core { animation: none; transform: scale(1); }
-  }
-
-  /* 樹的容器：用 SVG，並在外層做微調 */
-  .tree {
-    width:100%;
-    display:block;
-    transform-style:preserve-3d;
-    backface-visibility:hidden;
-  }
-
-  /* 底部陰影（讓旋轉更有浮起感）*/
-  .ground {
-    width:100%;
-    height:calc(min(62vmin,720px) * 0.28);
-    margin-top:-6vmin;
-    filter: blur(18px) brightness(0.28);
-    opacity:0.9;
-    pointer-events:none;
-  }
-
-  /* 星星呼吸效果 */
-  .star-core { transform-origin:center; animation: starPulse 2.6s ease-in-out infinite; }
-  @keyframes starPulse {
-    0%,100% { transform:scale(1); filter: drop-shadow(0 0 8px rgba(255,240,180,0.85)); }
-    50% { transform:scale(1.14); filter: drop-shadow(0 0 18px rgba(255,245,200,0.98)); }
-  }
-
-  /* 燈閃爍 — 不同延遲  */
-  .blink { animation: blink 1.6s linear infinite; opacity:0.95; }
-  .blink.d1 { animation-delay: 0.18s; }
-  .blink.d2 { animation-delay: 0.36s; }
-  .blink.d3 { animation-delay: 0.54s; }
-  @keyframes blink {
-    0% { opacity:0.12; transform: translateY(0) scale(0.96); filter:brightness(0.8); }
-    12% { opacity:1; transform: translateY(-1.8px) scale(1.08); filter:brightness(1.5); }
-    50% { opacity:0.55; transform: translateY(0) scale(1); }
-    100% { opacity:0.12; transform: translateY(0) scale(0.98); filter:brightness(0.85);}
-  }
-
-  /* 裝飾緩動（浮動） */
-  .floaty { animation: floaty 4.5s ease-in-out infinite; }
-  .floaty.s2 { animation-duration:3.6s; animation-delay:0.16s; }
-  @keyframes floaty {
-    0% { transform: translateY(0) rotate(0); }
-    50% { transform: translateY(-6px) rotate(6deg); }
-    100% { transform: translateY(0) rotate(0); }
-  }
-
-  /* 小說明（可移除） */
-  .hint {
-    position:fixed;
-    left:12px;
-    bottom:12px;
-    color:rgba(255,255,255,0.62);
-    font-size:13px;
-    pointer-events:none;
-    user-select:none;
-  }
-
-  /* 點擊暫停/播放提示按鈕（可用） */
-  .control {
-    position:fixed;
-    right:12px;
-    bottom:12px;
-    background: rgba(255,255,255,0.06);
-    border:1px solid rgba(255,255,255,0.06);
-    padding:8px 10px;
-    border-radius:10px;
-    color:rgba(255,255,255,0.9);
-    font-size:13px;
-    cursor:pointer;
-    backdrop-filter: blur(4px);
-    user-select:none;
-  }
-  .control:active { transform:scale(0.98); }
-
-  /* 微調在旋轉時的 front/back visibility 讓樹看起來有厚度 */
-  .layer { transform-style:preserve-3d; backface-visibility:hidden; }
-
-</style>
+    #result {
+      background-color: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+    }
+  </style>
 </head>
 <body>
-  <div class="stage">
-    <div class="scene">
 
-      <!-- spin-wrap 進行 3D 旋轉 -->
-      <div class="spin-wrap" id="spinWrap" aria-hidden="false">
+<!-- 🔹 首頁介紹 -->
+<div class="container text-center mt-5" id="home">
+  <h1 class="mb-4">MBTI 人格分析測驗</h1>
 
-        <!-- SVG 白色聖誕樹 (多層、立體感靠陰影與漸層) -->
-        <!-- SVG 使用 viewBox 保持比例，裝飾與燈的 class 用於 CSS 動畫 -->
-        <svg class="tree" viewBox="0 0 500 900" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="白色聖誕樹">
-          <defs>
-            <!-- 漸層與陰影 -->
-            <linearGradient id="whiteGrad" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stop-color="var(--tree-white-1)"/>
-              <stop offset="50%" stop-color="var(--tree-white-2)"/>
-              <stop offset="100%" stop-color="#e9f3fb"/>
-            </linearGradient>
+  <p>
+    MBTI 是一種人格分類方式，透過四個維度分析個人性格特質：
+  </p>
 
-            <linearGradient id="iceGloss" x1="0" x2="1">
-              <stop offset="0%" stop-color="rgba(255,255,255,0.95)"/>
-              <stop offset="100%" stop-color="rgba(210,235,255,0.85)"/>
-            </linearGradient>
+  <ul class="list-group mb-4">
+    <li class="list-group-item">外向 E / 內向 I</li>
+    <li class="list-group-item">實感 S / 直覺 N</li>
+    <li class="list-group-item">思考 T / 情感 F</li>
+    <li class="list-group-item">判斷 J / 感知 P</li>
+  </ul>
 
-            <radialGradient id="starG" cx="50%" cy="30%">
-              <stop offset="0%" stop-color="#fff9d6"/>
-              <stop offset="50%" stop-color="#fff2b2"/>
-              <stop offset="100%" stop-color="rgba(255,230,150,0)"/>
-            </radialGradient>
+  <button class="btn btn-primary btn-lg" onclick="startTest()">開始測驗</button>
+</div>
 
-            <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="6" result="b"/>
-              <feOffset dx="0" dy="6" result="o"/>
-              <feMerge><feMergeNode in="o"/><feMergeNode in="b"/></feMerge>
-            </filter>
+<!-- 🔹 測驗頁 -->
+<div class="container mt-5 d-none" id="quiz">
+  <h2 class="text-center mb-4">MBTI 人格測驗（12 題）</h2>
 
-            <filter id="glow" x="-40%" y="-40%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="6" result="g"/>
-              <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
+  <form id="mbtiForm">
 
-          </defs>
-
-          <!-- 背景柔光圈 -->
-          <g>
-            <ellipse cx="250" cy="140" rx="200" ry="70" fill="rgba(220,240,255,0.02)"></ellipse>
-            <ellipse cx="250" cy="180" rx="120" ry="40" fill="rgba(220,240,255,0.02)"></ellipse>
-          </g>
-
-          <!-- 三段樹冠，以多層鋸齒狀 path 表現積雪覆蓋的白色針葉 -->
-          <g transform="translate(0,80)" class="layer">
-            <!-- 下層 (最大) -->
-            <path d="M250 620 L60 360 C96 380 146 390 200 396 C254 402 306 398 358 394 C410 390 458 382 470 360 L250 620 Z"
-                  fill="url(#whiteGrad)" stroke="#e6eef8" stroke-width="1.4" />
-            <!-- 中層 -->
-            <path d="M250 450 L100 240 C130 260 178 276 230 286 C282 296 328 292 380 286 C432 280 470 268 480 240 L250 450 Z"
-                  fill="url(#whiteGrad)" stroke="#e6eef8" stroke-width="1.2" />
-            <!-- 上層 -->
-            <path d="M250 320 L160 140 C182 152 212 166 250 176 C288 166 318 152 340 140 L250 320 Z"
-                  fill="url(#whiteGrad)" stroke="#eef6ff" stroke-width="1.1" />
-            <!-- 頂尖 -->
-            <path d="M250 240 L234 206 L266 206 Z" fill="url(#whiteGrad)" stroke="#eef6ff" stroke-width="1"/>
-          </g>
-
-          <!-- 細節陰影與針葉線 (提升真實感) -->
-          <g transform="translate(0,80)" opacity="0.6">
-            <path d="M120 420 C200 480 300 480 380 420" fill="none" stroke="#dfeaf6" stroke-opacity="0.24" stroke-width="1.6"/>
-            <path d="M100 500 C200 550 300 550 400 500" fill="none" stroke="#dfeaf6" stroke-opacity="0.18" stroke-width="1.2"/>
-          </g>
-
-          <!-- 裝飾：冷色系玻璃球 + 小燈（使用少量元素提高效能） -->
-          <g transform="translate(0,80)" id="decors" class="layer">
-
-            <!-- 燈串 1 -->
-            <g class="blink" filter="url(#glow)">
-              <circle cx="190" cy="380" r="6" fill="var(--accent1)" class="blink d1"></circle>
-              <circle cx="240" cy="420" r="6" fill="var(--accent2)" class="blink d2"></circle>
-              <circle cx="300" cy="440" r="6" fill="var(--accent3)" class="blink d3"></circle>
-              <circle cx="360" cy="400" r="6" fill="var(--accent1)" class="blink d1"></circle>
-              <circle cx="420" cy="360" r="6" fill="var(--accent2)" class="blink d2"></circle>
-            </g>
-
-            <!-- 玻璃球（floaty）-->
-            <g class="floaty">
-              <g transform="translate(200,320)">
-                <circle r="14" fill="#fff" opacity="0.96" />
-                <circle r="11" fill="url(#iceGloss)" opacity="0.9" />
-                <ellipse rx="5" ry="2.8" cx="-4" cy="-5" fill="rgba(255,255,255,0.55)"></ellipse>
-              </g>
-
-              <g transform="translate(320,380)" class="floaty s2">
-                <circle r="16" fill="#fff" opacity="0.96" />
-                <circle r="12" fill="url(#iceGloss)" opacity="0.9" />
-                <ellipse rx="5.5" ry="3" cx="-5" cy="-6" fill="rgba(255,255,255,0.55)"></ellipse>
-              </g>
-
-              <g transform="translate(140,460)" class="floaty">
-                <circle r="12" fill="#fff" opacity="0.96" />
-                <circle r="9" fill="url(#iceGloss)" opacity="0.9" />
-                <ellipse rx="4" ry="2.4" cx="-3" cy="-5" fill="rgba(255,255,255,0.55)"></ellipse>
-              </g>
-            </g>
-
-          </g>
-
-          <!-- 樹幹（更淡，襯托白色樹） -->
-          <g transform="translate(0,80)" class="layer">
-            <rect x="220" y="690" width="60" height="120" rx="10" fill="#cbb6a8" opacity="0.95" />
-            <rect x="220" y="690" width="60" height="120" rx="10" fill="#a78a7a" opacity="0.08" />
-          </g>
-
-          <!-- 樹頂星星（呼吸） -->
-          <g transform="translate(250,160)" class="layer">
-            <g class="star-core" style="transform-origin:center;">
-              <polygon points="0,-26 6,-8 24,-8 9,4 14,26 0,14 -14,26 -9,4 -24,-8 -6,-8" fill="url(#starG)" stroke="rgba(255,250,220,0.95)" stroke-width="0.8"></polygon>
-              <ellipse cx="0" cy="-6" rx="38" ry="12" fill="rgba(255,245,200,0.06)"></ellipse>
-            </g>
-          </g>
-
-        </svg>
-
-        <!-- 底部柔和陰影 -->
-        <svg class="ground" viewBox="0 0 500 140" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-          <defs>
-            <linearGradient id="gsh2" x1="0" x2="1">
-              <stop offset="0%" stop-color="#000" stop-opacity="0.45"/>
-              <stop offset="100%" stop-color="#000" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <ellipse cx="250" cy="60" rx="220" ry="44" fill="url(#gsh2)"></ellipse>
-        </svg>
-
-      </div> <!-- end spin-wrap -->
-
+    <!-- E / I -->
+    <div class="card mb-3">
+      <p>1. 你比較喜歡？</p>
+      <input type="radio" name="q1" value="E"> 與很多人互動<br>
+      <input type="radio" name="q1" value="I"> 自己獨處
     </div>
-  </div>
 
-  <div class="hint">白色聖誕樹 · 自動 360° 旋轉 • 點擊右下按鈕可暫停/播放</div>
-  <div class="control" id="toggleBtn" title="暫停/播放旋轉">暫停旋轉</div>
+    <div class="card mb-3">
+      <p>2. 在團體中你通常？</p>
+      <input type="radio" name="q2" value="E"> 主動發言<br>
+      <input type="radio" name="q2" value="I"> 安靜傾聽
+    </div>
 
+    <div class="card mb-3">
+      <p>3. 你獲得能量的方式？</p>
+      <input type="radio" name="q3" value="E"> 和他人相處<br>
+      <input type="radio" name="q3" value="I"> 一個人休息
+    </div>
+
+    <!-- S / N -->
+    <div class="card mb-3">
+      <p>4. 你比較相信？</p>
+      <input type="radio" name="q4" value="S"> 實際經驗<br>
+      <input type="radio" name="q4" value="N"> 直覺想法
+    </div>
+
+    <div class="card mb-3">
+      <p>5. 學習時你偏好？</p>
+      <input type="radio" name="q5" value="S"> 具體步驟<br>
+      <input type="radio" name="q5" value="N"> 概念理解
+    </div>
+
+    <div class="card mb-3">
+      <p>6. 做事時你比較？</p>
+      <input type="radio" name="q6" value="S"> 注重細節<br>
+      <input type="radio" name="q6" value="N"> 注重大方向
+    </div>
+
+    <!-- T / F -->
+    <div class="card mb-3">
+      <p>7. 做決定時你會？</p>
+      <input type="radio" name="q7" value="T"> 依邏輯判斷<br>
+      <input type="radio" name="q7" value="F"> 依感受判斷
+    </div>
+
+    <div class="card mb-3">
+      <p>8. 評價事情時你較重視？</p>
+      <input type="radio" name="q8" value="T"> 公平<br>
+      <input type="radio" name="q8" value="F"> 和諧
+    </div>
+
+    <div class="card mb-3">
+      <p>9. 你比較像？</p>
+      <input type="radio" name="q9" value="T"> 理性分析<br>
+      <input type="radio" name="q9" value="F"> 情感豐富
+    </div>
+
+    <!-- J / P -->
+    <div class="card mb-3">
+      <p>10. 你做事習慣？</p>
+      <input type="radio" name="q10" value="J"> 先計畫<br>
+      <input type="radio" name="q10" value="P"> 隨機應變
+    </div>
+
+    <div class="card mb-3">
+      <p>11. 行程安排你偏好？</p>
+      <input type="radio" name="q11" value="J"> 有規劃<br>
+      <input type="radio" name="q11" value="P"> 彈性
+    </div>
+
+    <div class="card mb-3">
+      <p>12. 面對事情你通常？</p>
+      <input type="radio" name="q12" value="J"> 盡早完成<br>
+      <input type="radio" name="q12" value="P"> 最後再做
+    </div>
+
+    <div class="text-center">
+      <button type="button" class="btn btn-success btn-lg" onclick="calculateResult()">送出測驗</button>
+    </div>
+
+  </form>
+</div>
+
+<!-- 🔹 結果頁 -->
+<div class="container mt-5 d-none text-center" id="result">
+</div>
+
+<!-- JavaScript -->
 <script>
-  // 控制暫停 / 播放旋轉（切換 class 動畫或 inline style）
-  (function(){
-    const wrap = document.getElementById('spinWrap');
-    const btn = document.getElementById('toggleBtn');
-    let running = true;
-    btn.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      if(running){
-        wrap.style.animationPlayState = 'paused';
-        btn.textContent = '播放旋轉';
-      } else {
-        wrap.style.animationPlayState = 'running';
-        btn.textContent = '暫停旋轉';
-      }
-      running = !running;
-    });
+function startTest() {
+  document.getElementById("home").classList.add("d-none");
+  document.getElementById("quiz").classList.remove("d-none");
+}
 
-    // 單指點擊也暫停/播放（方便 demo）
-    document.addEventListener('keydown', (e)=>{
-      if(e.key === ' '){ // 空白鍵切換
-        btn.click();
-      }
-    });
-  })();
+function calculateResult() {
+  let count = {
+    E: 0, I: 0,
+    S: 0, N: 0,
+    T: 0, F: 0,
+    J: 0, P: 0
+  };
+
+  let form = document.getElementById("mbtiForm");
+  let data = new FormData(form);
+
+  for (let value of data.values()) {
+    count[value]++;
+  }
+
+  let result =
+    (count.E >= count.I ? "E" : "I") +
+    (count.S >= count.N ? "S" : "N") +
+    (count.T >= count.F ? "T" : "F") +
+    (count.J >= count.P ? "J" : "P");
+
+  document.getElementById("quiz").classList.add("d-none");
+
+  let resultDiv = document.getElementById("result");
+  resultDiv.classList.remove("d-none");
+  resultDiv.innerHTML = `
+    <h2>你的 MBTI 類型是：${result}</h2>
+    <p class="mt-3">
+      本測驗為學習用途，非專業心理測驗。
+    </p>
+  `;
+}
 </script>
+
 </body>
 </html>
