@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>MBTI 人格分析測驗</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .card {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 10px;
+      margin: 10px auto;
+      width: 80%;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 首頁 -->
+<div id="home">
+  <h1>MBTI 人格分析測驗</h1>
+  <p>MBTI 四個維度：E/I、S/N、T/F、J/P</p>
+  <button onclick="startTest()">開始測驗</button>
+</div>
+
+<!-- 測驗頁 -->
+<div id="quiz" style="display:none;">
+  <form id="mbtiForm">
+    <!-- E/I -->
+    <div class="card">
+      <p>1. 你喜歡與人互動嗎？</p>
+      <input type="radio" name="q1" value="E"> 喜歡<br>
+      <input type="radio" name="q1" value="I"> 不喜歡
+    </div>
+    <div class="card">
+      <p>2. 你在團體中通常？</p>
+      <input type="radio" name="q2" value="E"> 主動發言<br>
+      <input type="radio" name="q2" value="I"> 安靜傾聽
+    </div>
+    <div class="card">
+      <p>3. 獲得能量的方式？</p>
+      <input type="radio" name="q3" value="E"> 與人互動<br>
+      <input type="radio" name="q3" value="I"> 獨處
+    </div>
+
+    <!-- S/N -->
+    <div class="card">
+      <p>4. 你相信什麼？</p>
+      <input type="radio" name="q4" value="S"> 實際經驗<br>
+      <input type="radio" name="q4" value="N"> 直覺想法
+    </div>
+    <div class="card">
+      <p>5. 學習偏好？</p>
+      <input type="radio" name="q5" value="S"> 具體步驟<br>
+      <input type="radio" name="q5" value="N"> 概念理解
+    </div>
+    <div class="card">
+      <p>6. 做事時？</p>
+      <input type="radio" name="q6" value="S"> 注重細節<br>
+      <input type="radio" name="q6" value="N"> 注重大方向
+    </div>
+
+    <!-- T/F -->
+    <div class="card">
+      <p>7. 做決定時？</p>
+      <input type="radio" name="q7" value="T"> 依邏輯<br>
+      <input type="radio" name="q7" value="F"> 依感受
+    </div>
+    <div class="card">
+      <p>8. 評價事情？</p>
+      <input type="radio" name="q8" value="T"> 公平<br>
+      <input type="radio" name="q8" value="F"> 和諧
+    </div>
+    <div class="card">
+      <p>9. 你比較像？</p>
+      <input type="radio" name="q9" value="T"> 理性分析<br>
+      <input type="radio" name="q9" value="F"> 情感豐富
+    </div>
+
+    <!-- J/P -->
+    <div class="card">
+      <p>10. 做事習慣？</p>
+      <input type="radio" name="q10" value="J"> 先計畫<br>
+      <input type="radio" name="q10" value="P"> 隨機應變
+    </div>
+    <div class="card">
+      <p>11. 行程安排？</p>
+      <input type="radio" name="q11" value="J"> 有規劃<br>
+      <input type="radio" name="q11" value="P"> 彈性
+    </div>
+    <div class="card">
+      <p>12. 面對事情通常？</p>
+      <input type="radio" name="q12" value="J"> 盡早完成<br>
+      <input type="radio" name="q12" value="P"> 最後再做
+    </div>
+
+    <br>
+    <button type="button" onclick="calculateResult()">送出</button>
+  </form>
+</div>
+
+<!-- 結果頁 -->
+<div id="result" style="display:none;"></div>
+
+<script>
+function startTest() {
+  document.getElementById("home").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+}
+
+function calculateResult() {
+  let count = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+  let form = document.getElementById("mbtiForm");
+  let data = new FormData(form);
+
+  for (let value of data.values()) {
+    count[value]++;
+  }
+
+  let result = (count.E>=count.I?'E':'I') +
+               (count.S>=count.N?'S':'N') +
+               (count.T>=count.F?'T':'F') +
+               (count.J>=count.P?'J':'P');
+
+  document.getElementById("quiz").style.display = "none";
+  let resultDiv = document.getElementById("result");
+  resultDiv.style.display = "block";
+  resultDiv.innerHTML = "<h2>你的 MBTI 類型是：" + result + "</h2>" +
+                        "<button onclick='restartTest()'>重新測驗</button>";
+}
+
+function restartTest() {
+  document.getElementById("result").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+  document.getElementById("mbtiForm").reset();
+}
+</script>
+
+</body>
+</html>
