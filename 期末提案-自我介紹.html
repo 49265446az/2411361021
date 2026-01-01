@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>個人自我介紹網站</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      text-align: center;
+    }
+
+    .container {
+      width: 80%;
+      margin: auto;
+    }
+
+    img {
+      width: 150px;
+      border-radius: 50%;
+      margin-top: 20px;
+    }
+
+    .card {
+      background-color: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 10px;
+    }
+
+    input, textarea {
+      width: 80%;
+      padding: 8px;
+      margin: 5px 0;
+    }
+
+    button {
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- 🔹 首頁：自我介紹 -->
+  <div class="card" id="home">
+    <h1>個人自我介紹網站</h1>
+    <p>歡迎來到我的個人網站</p>
+    <img src="https://via.placeholder.com/150" alt="個人照片">
+  </div>
+
+  <!-- 🔹 填寫個人資料 -->
+  <div class="card">
+    <h2>填寫個人資料</h2>
+
+    <p>姓名</p>
+    <input type="text" id="name">
+
+    <p>自我介紹</p>
+    <textarea id="intro"></textarea>
+
+    <p>個人經歷</p>
+    <textarea id="experience"></textarea>
+
+    <p>Email</p>
+    <input type="text" id="email">
+
+    <br><br>
+    <button onclick="showResult()">完成</button>
+  </div>
+
+  <!-- 🔹 顯示結果 -->
+  <div class="card" id="result" style="display:none;">
+    <h2>我的自我介紹</h2>
+    <p id="rName"></p>
+    <p id="rIntro"></p>
+    <p id="rExp"></p>
+
+    <h3>聯絡方式</h3>
+    <p id="rEmail"></p>
+  </div>
+
+</div>
+
+<script>
+function showResult() {
+  document.getElementById("result").style.display = "block";
+
+  document.getElementById("rName").innerText =
+    "姓名：" + document.getElementById("name").value;
+
+  document.getElementById("rIntro").innerText =
+    "自我介紹：" + document.getElementById("intro").value;
+
+  document.getElementById("rExp").innerText =
+    "個人經歷：" + document.getElementById("experience").value;
+
+  document.getElementById("rEmail").innerText =
+    "Email：" + document.getElementById("email").value;
+}
+</script>
+
+</body>
+</html>
